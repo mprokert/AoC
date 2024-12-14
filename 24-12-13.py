@@ -47,6 +47,31 @@ class Machine:
             return 3*i + j
         return 0
 
+    def solve3(self):
+        t1, t2 = 3, 1
+        token = 0
+        if self.b.real > self.b.imag:
+            self.a, self.b = self.b, self.a
+            t1, t2 = 1, 3
+        if self.a.real <= self.a.imag or self.b.real >= self.b.imag:
+            raise ValueError
+
+        while True:
+            if self.p.real > self.p.imag > 0:
+                i = max(int(self.p.real / self.a.real / 2) - 1, 1)
+                self.p -= i * self.a
+                token += t1 * i
+            elif self.p.imag >= self.p.real > 0:
+                i = max(int(self.p.imag / self.b.imag / 2) - 1, 1)
+                self.p -= i * self.b
+                token += t2 * i
+            if self.p.imag < 0 or self.p.real < 0:
+                token = 0
+                break
+            if self.p.imag == 0 and self.p.real == 0:
+                break
+        return token
+
 import re
 
 rexa = re.compile(r"Button A: X\+(\d+), Y\+(\d+)")
