@@ -68,15 +68,15 @@ bcg = CharGrid(g)
 robot = bcg.find("@")[0]
 
 def move(start, direction, check=False):
-    positions, chars = bcg.get_items(start, direction)
-    j = chars.index("#")
-    try:
-        i = chars.index(".")
-    except ValueError:
-        return False
-    if j < i:
-        return False
     if direction in (1, -1):
+        positions, chars = bcg.get_items(start, direction)
+        j = chars.index("#")
+        try:
+            i = chars.index(".")
+        except ValueError:
+            return False
+        if j < i:
+            return False
         if check:
             return True
         for j in range(i, 0, -1):
@@ -84,6 +84,7 @@ def move(start, direction, check=False):
         bcg.grid[start] = "."
         return True
     else:
+        positions, chars = bcg.get_items(start, direction, 2)
         if check:
             if chars[1] == "#":
                 return False
@@ -101,7 +102,7 @@ def move(start, direction, check=False):
                 move(positions[1], direction, check)
                 move(positions[1] - 1, direction, check)
 
-            positions, chars = bcg.get_items(start, direction)
+            positions, chars = bcg.get_items(start, direction, 2)
             bcg.grid[positions[1]] = chars[0]
             bcg.grid[positions[0]] = chars[1]
 
