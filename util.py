@@ -1,6 +1,11 @@
+import sys
+
+
 class CharGrid:
     def __init__(self, data=None):
         self.grid = {}
+        self.weight_grid = {}
+
         if data:
             lines = [line.strip() for line in data.splitlines() if line.strip()]
 
@@ -88,6 +93,30 @@ class CharGrid:
                 if len(items) >= length:
                     break
         return positions, items
+
+    def dijkstra(self, start_pos=0+0j):
+        final_grid = {}
+        unseen = set()
+        for pos in self.grid:
+            value = 0 if pos == start_pos else sys.maxsize
+            final_grid[pos] = value
+            unseen.add(pos)
+
+        while unseen:
+            _, next_ = min([(final_grid[k], k) for k in unseen], key=lambda x: x[0])
+            unseen.remove(next_)
+            value = final_grid[next_]
+            if value == sys.maxsize:
+                return final_grid
+            for nb in self.get_neighbors(next_):
+                next_val = self.weight_grid[nb] + value
+                if next_val < final_grid[nb]:
+                    final_grid[nb] = next_val
+        return final_grid
+
+    def set_weights(self, weight_dict):
+        for pos in self.grid:
+            self.weight_grid[pos] = weight_dict.get(self.grid[pos], 1)
 
 
 if __name__ == "__main__":
